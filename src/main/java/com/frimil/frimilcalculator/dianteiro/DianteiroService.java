@@ -13,7 +13,9 @@ public class DianteiroService {
 
         Lucro lucro = new Lucro();
 
-        BigDecimal pesoTotalDianteiro = dianteiroDTO.getDianteiroPeso().multiply(dianteiroDTO.getDianteiroPreco());
+        ValorVendaDianteiro valorVendaDianteiro = new ValorVendaDianteiro();
+
+        BigDecimal precoTotalDianteiro = dianteiroDTO.getDianteiroPeso().multiply(dianteiroDTO.getDianteiroPreco());
 
         BigDecimal pescocoLucro = dianteiroDTO.getPescocoPeso().multiply(new BigDecimal(15.65));
 
@@ -23,10 +25,22 @@ public class DianteiroService {
 
         BigDecimal totalSoma = pescocoLucro.add(acemLucro.add(cupimLucro));
 
-        lucro.setLucroBruto(totalSoma.subtract(pesoTotalDianteiro).setScale(2, RoundingMode.HALF_UP));
-
-        
+        lucro.setLucroBruto(totalSoma.subtract(precoTotalDianteiro).setScale(2, RoundingMode.HALF_UP));
 
         return lucro;
     }
+
+
+    public BigDecimal calculaTotal(BigDecimal venda, BigDecimal quantidade){
+        return venda.multiply(quantidade);
+    }
+
+    public BigDecimal calculaCusto(BigDecimal pesoTotalProdutos, BigDecimal precoTotalDianteiro){
+        return precoTotalDianteiro.divide(pesoTotalProdutos);
+    }
+
+    public BigDecimal calculaPercentual(BigDecimal pesoProduto, BigDecimal pesoTotalDianteiro){
+        return pesoProduto.divide(pesoTotalDianteiro).multiply(BigDecimal.valueOf(100));
+    }
+
 }
