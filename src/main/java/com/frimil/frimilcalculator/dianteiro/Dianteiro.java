@@ -4,7 +4,7 @@ import org.springframework.lang.NonNull;
 
 import java.math.BigDecimal;
 
-public class DianteiroDTO {
+public class Dianteiro {
 
     @NonNull
     private BigDecimal dianteiroPeso;

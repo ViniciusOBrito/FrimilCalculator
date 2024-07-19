@@ -15,7 +15,7 @@ public class DianteiroResource {
     }
 
     @PostMapping("/calculate")
-    public ResponseEntity<Lucro> calcularLucroDianteiro(@RequestBody DianteiroDTO dianteiroDTO){
+    public ResponseEntity<Lucro> calcularLucroDianteiro(@RequestBody Dianteiro dianteiroDTO){
         return ResponseEntity.ok().body(dianteiroService.calcularLucro(dianteiroDTO));
     }
 }
