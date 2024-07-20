@@ -8,15 +8,14 @@ public class Dianteiro {
 
     @NonNull
     private BigDecimal dianteiroPeso;
-
     @NonNull
     private BigDecimal dianteiroPreco;
-
-    private BigDecimal pescocoPeso;
-
-    private BigDecimal acemPeso;
-
+    private BigDecimal agulhaSemOssoPeso;
+    private BigDecimal bistecaDaPaPeso;
     private BigDecimal cupimPeso;
+    private BigDecimal ossoBucoPeso;
+    private BigDecimal paComOssoPeso;
+    private BigDecimal paSemOssoPeso;
 
     @NonNull
     public BigDecimal getDianteiroPeso() {
@@ -36,20 +35,20 @@ public class Dianteiro {
         this.dianteiroPreco = dianteiroPreco;
     }
 
-    public BigDecimal getPescocoPeso() {
-        return pescocoPeso;
+    public BigDecimal getAgulhaSemOssoPeso() {
+        return agulhaSemOssoPeso;
     }
 
-    public void setPescocoPeso(BigDecimal pescocoPeso) {
-        this.pescocoPeso = pescocoPeso;
+    public void setAgulhaSemOssoPeso(BigDecimal agulhaSemOssoPeso) {
+        this.agulhaSemOssoPeso = agulhaSemOssoPeso;
     }
 
-    public BigDecimal getAcemPeso() {
-        return acemPeso;
+    public BigDecimal getBistecaDaPaPeso() {
+        return bistecaDaPaPeso;
     }
 
-    public void setAcemPeso(BigDecimal acemPeso) {
-        this.acemPeso = acemPeso;
+    public void setBistecaDaPaPeso(BigDecimal bistecaDaPaPeso) {
+        this.bistecaDaPaPeso = bistecaDaPaPeso;
     }
 
     public BigDecimal getCupimPeso() {
@@ -58,5 +57,29 @@ public class Dianteiro {
 
     public void setCupimPeso(BigDecimal cupimPeso) {
         this.cupimPeso = cupimPeso;
+    }
+
+    public BigDecimal getOssoBucoPeso() {
+        return ossoBucoPeso;
+    }
+
+    public void setOssoBucoPeso(BigDecimal ossoBucoPeso) {
+        this.ossoBucoPeso = ossoBucoPeso;
+    }
+
+    public BigDecimal getPaComOssoPeso() {
+        return paComOssoPeso;
+    }
+
+    public void setPaComOssoPeso(BigDecimal paComOssoPeso) {
+        this.paComOssoPeso = paComOssoPeso;
+    }
+
+    public BigDecimal getPaSemOssoPeso() {
+        return paSemOssoPeso;
+    }
+
+    public void setPaSemOssoPeso(BigDecimal paSemOssoPeso) {
+        this.paSemOssoPeso = paSemOssoPeso;
     }
 }

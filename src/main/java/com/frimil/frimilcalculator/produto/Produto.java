@@ -14,6 +14,16 @@ public class Produto {
 
     BigDecimal total;
 
+    public Produto(){}
+
+    public Produto(BigDecimal quantidade, BigDecimal percentual, BigDecimal custo, BigDecimal venda, BigDecimal total) {
+        this.quantidade = quantidade;
+        this.percentual = percentual;
+        this.custo = custo;
+        this.venda = venda;
+        this.total = total;
+    }
+
     public BigDecimal getQuantidade() {
         return quantidade;
     }

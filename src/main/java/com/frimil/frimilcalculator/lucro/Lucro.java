@@ -7,24 +7,15 @@ import java.math.BigDecimal;
 public class Lucro {
 
     private BigDecimal custo;
-
     private BigDecimal venda;
     private BigDecimal lucroBruto;
-
     private AgulhaSemOsso agulhaSemOsso;
-
     private BistecaDaPa bistecaDaPa;
-
     private Cupim cupim;
-
     private OssoBuco ossoBuco;
-
     private PaComOsso paComOsso;
-
     private PaSemOsso paSemOsso;
-
     public Lucro(){
-
     }
 
     public Lucro(BigDecimal custo, BigDecimal venda, BigDecimal lucroBruto, AgulhaSemOsso agulhaSemOsso, BistecaDaPa bistecaDaPa, Cupim cupim, OssoBuco ossoBuco, PaComOsso paComOsso, PaSemOsso paSemOsso) {
