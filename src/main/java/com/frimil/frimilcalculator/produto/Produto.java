@@ -1,27 +1,56 @@
 package com.frimil.frimilcalculator.produto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.frimil.frimilcalculator.peca.Peca;
+import com.frimil.frimilcalculator.venda.Venda;
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 
+@Entity
+@Table()
 public class Produto {
 
-    BigDecimal quantidade;
-
-    BigDecimal percentual;
-
-    BigDecimal custo;
-
-    BigDecimal venda;
-
-    BigDecimal total;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne
+    @JoinColumn(name = "peca_id")
+    @JsonBackReference
+    private Peca peca;
+    @OneToOne
+    private Venda venda;
+    private BigDecimal peso;
+    private BigDecimal quantidade;
+    private BigDecimal percentual;
+    private BigDecimal custo;
+    private BigDecimal total;
 
     public Produto(){}
 
-    public Produto(BigDecimal quantidade, BigDecimal percentual, BigDecimal custo, BigDecimal venda, BigDecimal total) {
-        this.quantidade = quantidade;
-        this.percentual = percentual;
-        this.custo = custo;
-        this.venda = venda;
-        this.total = total;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Peca getPeca() {
+        return peca;
+    }
+
+    public void setPeca(Peca peca) {
+        this.peca = peca;
+    }
+
+    public BigDecimal getPeso() {
+        return peso;
+    }
+
+    public void setPeso(BigDecimal peso) {
+        this.peso = peso;
     }
 
     public BigDecimal getQuantidade() {
@@ -48,11 +77,11 @@ public class Produto {
         this.custo = custo;
     }
 
-    public BigDecimal getVenda() {
+    public Venda getVenda() {
         return venda;
     }
 
-    public void setVenda(BigDecimal venda) {
+    public void setVenda(Venda venda) {
         this.venda = venda;
     }
 

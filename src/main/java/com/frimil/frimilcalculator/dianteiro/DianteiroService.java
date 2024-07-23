@@ -1,112 +1,57 @@
 package com.frimil.frimilcalculator.dianteiro;
 
-import com.frimil.frimilcalculator.lucro.Lucro;
+import com.frimil.frimilcalculator.peca.Peca;
+import com.frimil.frimilcalculator.peca.PecaDTO;
+import com.frimil.frimilcalculator.peca.PecaServico;
+import com.frimil.frimilcalculator.produto.Produto;
+import com.frimil.frimilcalculator.produto.ProdutoServico;
+import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class DianteiroService {
 
-    public Lucro calcularLucro(Dianteiro dianteiroDTO){
+    private final PecaServico pecaServico;
 
-        ValorVendaDianteiro valorVendaDianteiro = new ValorVendaDianteiro();
+    private final ProdutoServico produtoServico;
 
-        BigDecimal precoTotalDianteiro = dianteiroDTO.getDianteiroPeso().multiply(dianteiroDTO.getDianteiroPreco());
+    public DianteiroService(PecaServico pecaServico, ProdutoServico produtoServico) {
+        this.pecaServico = pecaServico;
+        this.produtoServico = produtoServico;
+    }
 
-        BigDecimal pesoTotalProdutos = somarTotalProdutos(dianteiroDTO);
+    @Transactional
+    public PecaDTO salvarDianteiro(PecaDTO pecaDTO){
+        try{
+            Peca peca = new Peca();
+            peca.setIdPeca(1L);
+            peca.setPeso(pecaDTO.getPeso());
+            peca.setValorDeCompra(pecaDTO.getValorDeCompra());
+
+            List<Produto> produtos = pecaDTO.getListaDeProdutos().stream().map(
+                    produtoDTO -> {
+                        Produto produto = new Produto();
+                        BeanUtils.copyProperties(produtoDTO, produto);
+                        return produto;
+                    }).collect(Collectors.toList());
 
 
-        AgulhaSemOsso agulhaSemOsso  = new AgulhaSemOsso(
-                dianteiroDTO.getAgulhaSemOssoPeso(),
-                this.calculaPercentual(dianteiroDTO.getAgulhaSemOssoPeso(), dianteiroDTO.getDianteiroPeso()),
-                this.calculaCustoProduto(pesoTotalProdutos, precoTotalDianteiro),
-                valorVendaDianteiro.getValorAgulhaSemOsso(),
-                this.calculaVendaProduto(valorVendaDianteiro.getValorAgulhaSemOsso(), dianteiroDTO.getAgulhaSemOssoPeso())
-        );
+            produtos.forEach(peca::addProduto);
 
-        BistecaDaPa bistecaDaPa  = new BistecaDaPa(
-                dianteiroDTO.getBistecaDaPaPeso(),
-                this.calculaPercentual(dianteiroDTO.getBistecaDaPaPeso(), dianteiroDTO.getDianteiroPeso()),
-                this.calculaCustoProduto(pesoTotalProdutos, precoTotalDianteiro),
-                valorVendaDianteiro.getValoBistecaDaPa(),
-                this.calculaVendaProduto(valorVendaDianteiro.getValoBistecaDaPa(), dianteiroDTO.getBistecaDaPaPeso())
-        );
+            return pecaServico.salvaPeca(peca);
 
-        Cupim cupim  = new Cupim(
-                dianteiroDTO.getCupimPeso(),
-                this.calculaPercentual(dianteiroDTO.getCupimPeso(), dianteiroDTO.getDianteiroPeso()),
-                this.calculaCustoProduto(pesoTotalProdutos, precoTotalDianteiro),
-                valorVendaDianteiro.getValoCupim(),
-                this.calculaVendaProduto(valorVendaDianteiro.getValoCupim(), dianteiroDTO.getCupimPeso())
-        );
-
-        OssoBuco ossoBuco  = new OssoBuco(
-                dianteiroDTO.getOssoBucoPeso(),
-                this.calculaPercentual(dianteiroDTO.getOssoBucoPeso(), dianteiroDTO.getDianteiroPeso()),
-                this.calculaCustoProduto(pesoTotalProdutos, precoTotalDianteiro),
-                valorVendaDianteiro.getValorOssoBuco(),
-                this.calculaVendaProduto(valorVendaDianteiro.getValorOssoBuco(), dianteiroDTO.getOssoBucoPeso())
-        );
-
-        PaComOsso paComOsso  = new PaComOsso(
-                dianteiroDTO.getPaComOssoPeso(),
-                this.calculaPercentual(dianteiroDTO.getPaComOssoPeso(), dianteiroDTO.getDianteiroPeso()),
-                this.calculaCustoProduto(pesoTotalProdutos, precoTotalDianteiro),
-                valorVendaDianteiro.getValorPaComOsso(),
-                this.calculaVendaProduto(valorVendaDianteiro.getValorPaComOsso(), dianteiroDTO.getPaComOssoPeso())
-        );
-
-        PaSemOsso paSemOsso  = new PaSemOsso(
-                dianteiroDTO.getPaSemOssoPeso(),
-                this.calculaPercentual(dianteiroDTO.getPaSemOssoPeso(), dianteiroDTO.getDianteiroPeso()),
-                this.calculaCustoProduto(pesoTotalProdutos, precoTotalDianteiro),
-                valorVendaDianteiro.getValorPaSemOsso(),
-                this.calculaVendaProduto(valorVendaDianteiro.getValorPaSemOsso(), dianteiroDTO.getPaSemOssoPeso())
-        );
-
-        BigDecimal custoTotal = this.calculaTotal(
-                agulhaSemOsso.getCusto(),
-                bistecaDaPa.getCusto(),
-                cupim.getCusto(),
-                ossoBuco.getCusto(),
-                paComOsso.getCusto(),
-                paSemOsso.getCusto()
-        );
-
-        BigDecimal quantidadeTotal = this.calculaTotal(
-                dianteiroDTO.getAgulhaSemOssoPeso(),
-                dianteiroDTO.getBistecaDaPaPeso(),
-                dianteiroDTO.getCupimPeso(),
-                dianteiroDTO.getOssoBucoPeso(),
-                dianteiroDTO.getPaComOssoPeso(),
-                dianteiroDTO.getPaSemOssoPeso()
-        );
-
-        BigDecimal vendaTotal = this.calculaTotal(
-                agulhaSemOsso.getTotal(),
-                bistecaDaPa.getTotal(),
-                cupim.getTotal(),
-                ossoBuco.getTotal(),
-                paComOsso.getTotal(),
-                paSemOsso.getTotal()
-        );
-
-        return new Lucro(
-                this.calculaCustoTotal(quantidadeTotal, custoTotal),
-                vendaTotal,
-                this.calcularLucroTotal(custoTotal, vendaTotal),
-                agulhaSemOsso,
-                bistecaDaPa,
-                cupim,
-                ossoBuco,
-                paComOsso,
-                paSemOsso
-        );
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
     }
 
 
@@ -143,7 +88,7 @@ public class DianteiroService {
         return soma;
     }
 
-    public BigDecimal somarTotalProdutos(Dianteiro dianteiroDTO){
+    public BigDecimal somarTotalProdutos(DianteiroDTO dianteiroDTO){
         BigDecimal soma = BigDecimal.ZERO;
         Field[] fields = dianteiroDTO.getClass().getDeclaredFields();
 
