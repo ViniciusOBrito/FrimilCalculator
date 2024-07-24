@@ -4,6 +4,7 @@ package com.frimil.frimilcalculator.venda;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Service
@@ -23,5 +24,9 @@ public class VendaServico {
         venda =  vendaRepositorio.save(venda);
         BeanUtils.copyProperties(venda, vendaDTO);
         return vendaDTO;
+    }
+
+    public BigDecimal buscaVendaPorIdProdutoEPeca(Long idPeca, Long idProduto){
+        return vendaRepositorio.findByIdPecaAndIdProdutoOrderByDataAtualizacaoDesc(idPeca, idProduto).getValorDeVenda();
     }
 }

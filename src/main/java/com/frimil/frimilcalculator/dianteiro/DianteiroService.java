@@ -5,6 +5,8 @@ import com.frimil.frimilcalculator.peca.PecaDTO;
 import com.frimil.frimilcalculator.peca.PecaServico;
 import com.frimil.frimilcalculator.produto.Produto;
 import com.frimil.frimilcalculator.produto.ProdutoServico;
+import com.frimil.frimilcalculator.venda.VendaServico;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -18,16 +20,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class DianteiroService {
 
     private final PecaServico pecaServico;
 
     private final ProdutoServico produtoServico;
 
-    public DianteiroService(PecaServico pecaServico, ProdutoServico produtoServico) {
-        this.pecaServico = pecaServico;
-        this.produtoServico = produtoServico;
-    }
+    private final VendaServico vendaServico;
+
+
 
     @Transactional
     public PecaDTO salvarDianteiro(PecaDTO pecaDTO){
@@ -37,13 +39,23 @@ public class DianteiroService {
             peca.setPeso(pecaDTO.getPeso());
             peca.setValorDeCompra(pecaDTO.getValorDeCompra());
 
+            BigDecimal pesoTotalProdutos = pecaDTO.getListaDeProdutos().
+                    stream().
+                    map(Produto::getQuantidade)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal custoProduto = this.calculaCustoProduto(pesoTotalProdutos, pecaDTO.getPeso());
+
             List<Produto> produtos = pecaDTO.getListaDeProdutos().stream().map(
                     produtoDTO -> {
                         Produto produto = new Produto();
                         BeanUtils.copyProperties(produtoDTO, produto);
+                        produto.setPercentual(this.calculaPercentual(produto.getQuantidade(), pecaDTO.getPeso()));
+                        produto.setCusto(custoProduto);
+                        produto.setVenda(vendaServico.buscaVendaPorIdProdutoEPeca(peca.getIdPeca(), produto.getIdProduto()));
+                        produto.setTotal(this.calculaVendaTotalProduto(produto.getVenda(), produto.getQuantidade()));
                         return produto;
                     }).collect(Collectors.toList());
-
 
             produtos.forEach(peca::addProduto);
 
@@ -55,7 +67,9 @@ public class DianteiroService {
     }
 
 
-    public BigDecimal calculaVendaProduto(BigDecimal valorVenda, BigDecimal quantidade){
+
+
+    public BigDecimal calculaVendaTotalProduto(BigDecimal valorVenda, BigDecimal quantidade){
         return valorVenda.multiply(quantidade);
     }
 
@@ -64,8 +78,8 @@ public class DianteiroService {
     }
 
     public BigDecimal calculaPercentual(BigDecimal pesoProduto, BigDecimal pesoDianteiro){
-         BigDecimal valorDividido = pesoProduto.divide(pesoDianteiro , RoundingMode.HALF_UP);
-         return valorDividido.multiply(BigDecimal.valueOf(100));
+         BigDecimal valorDividido = pesoProduto.divide(pesoDianteiro, 3, RoundingMode.HALF_UP);
+         return valorDividido.multiply(BigDecimal.valueOf(100)).setScale(RoundingMode.HALF_UP.ordinal());
     }
 
     public BigDecimal calcularLucroTotal(BigDecimal custoTotal, BigDecimal vendaTotal){
@@ -74,39 +88,6 @@ public class DianteiroService {
 
     public BigDecimal calculaCustoTotal(BigDecimal quantidadeTotal, BigDecimal custoTotal){
         return quantidadeTotal.multiply(custoTotal);
-    }
-
-    public BigDecimal calculaTotal(BigDecimal valor1, BigDecimal valor2, BigDecimal valor3, BigDecimal valor4, BigDecimal valor5,BigDecimal valor6){
-        BigDecimal soma = BigDecimal.ZERO;
-
-        soma = soma.add(valor1);
-        soma = soma.add(valor2);
-        soma = soma.add(valor3);
-        soma = soma.add(valor4);
-        soma = soma.add(valor5);
-        soma = soma.add(valor6);
-        return soma;
-    }
-
-    public BigDecimal somarTotalProdutos(DianteiroDTO dianteiroDTO){
-        BigDecimal soma = BigDecimal.ZERO;
-        Field[] fields = dianteiroDTO.getClass().getDeclaredFields();
-
-        for (Field field : fields) {
-            if (field.getType().equals(BigDecimal.class) && field.getAnnotation(NonNull.class) == null) {
-                field.setAccessible(true);
-                try {
-                    BigDecimal value = (BigDecimal) field.get(dianteiroDTO);
-                    if (Objects.nonNull(value)) {
-                        soma = soma.add(value);
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return soma;
     }
 
 }

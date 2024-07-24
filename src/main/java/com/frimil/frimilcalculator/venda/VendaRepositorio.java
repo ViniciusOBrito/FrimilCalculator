@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VendaRepositorio extends JpaRepository<Venda, Long> {
+
+    Venda findByIdPecaAndIdProdutoOrderByDataAtualizacaoDesc(Long idPeca, Long idProduto);
 }
