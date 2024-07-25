@@ -1,5 +1,6 @@
 package com.frimil.frimilcalculator.peca;
 
+import com.frimil.frimilcalculator.exception.EntidadeNaoEncontradaException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,11 @@ public class PecaRecurso {
 
     @GetMapping("/{id}")
     public ResponseEntity<PecaDTO> buscaPeca(@PathVariable Long id){
-        return ResponseEntity.ok().body(pecaServico.buscarPeca(id));
+        try{
+            return ResponseEntity.ok().body(pecaServico.buscarPeca(id));
+        }catch (EntidadeNaoEncontradaException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/listaPorId/{idPeca}")

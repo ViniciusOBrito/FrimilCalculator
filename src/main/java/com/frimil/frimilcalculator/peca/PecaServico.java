@@ -1,6 +1,7 @@
 package com.frimil.frimilcalculator.peca;
 
 import com.frimil.frimilcalculator.calculo.CalculoServico;
+import com.frimil.frimilcalculator.exception.EntidadeNaoEncontradaException;
 import com.frimil.frimilcalculator.produto.Produto;
 import com.frimil.frimilcalculator.venda.VendaServico;
 import jakarta.transaction.Transactional;
@@ -49,7 +50,8 @@ public class PecaServico {
     }
 
     public PecaDTO buscarPeca(Long id){
-        Peca peca =  pecaRepositorio.findById(id).orElseThrow(()-> new EmptyResultDataAccessException(1));
+        Peca peca =  pecaRepositorio.findById(id).
+                orElseThrow(()-> new EntidadeNaoEncontradaException(String.format("Não foi encontado nenhum registro com o ID: %d", id)));
         return new PecaDTO(peca);
     }
 
