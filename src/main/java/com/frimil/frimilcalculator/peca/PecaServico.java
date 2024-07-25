@@ -6,10 +6,12 @@ import com.frimil.frimilcalculator.venda.VendaServico;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +46,18 @@ public class PecaServico {
         }catch (Exception e){
             throw new RuntimeException();
         }
+    }
+
+    public PecaDTO buscarPeca(Long id){
+        Peca peca =  pecaRepositorio.findById(id).orElseThrow(()-> new EmptyResultDataAccessException(1));
+        return new PecaDTO(peca);
+    }
+
+    public List<PecaDTO> listarPecas(Long idPeca){
+        return pecaRepositorio.findAllByIdPeca(idPeca)
+                .stream()
+                .map(PecaDTO::new)
+                .collect(Collectors.toList());
     }
 
     public void calcularValoresDoProduto(Produto produto, PecaDTO pecaDTO){
