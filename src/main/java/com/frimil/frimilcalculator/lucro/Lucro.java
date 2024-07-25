@@ -1,7 +1,5 @@
 package com.frimil.frimilcalculator.lucro;
 
-import com.frimil.frimilcalculator.dianteiro.*;
-
 import java.math.BigDecimal;
 
 public class Lucro {
