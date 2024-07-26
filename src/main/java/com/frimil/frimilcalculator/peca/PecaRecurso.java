@@ -10,19 +10,14 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/peca")
+@RequestMapping("/pecas")
 public class PecaRecurso {
 
     private final PecaServico pecaServico;
 
     @PostMapping()
     public ResponseEntity<PecaDTO> calcularLucroDianteiro(@RequestBody PecaDTO pecaDTO){
-        try{
             return ResponseEntity.ok().body(pecaServico.cadastrarPecaEProdutos(pecaDTO));
-        }catch (ConstraintViolationException e){
-            return ResponseEntity.badRequest().build();
-        }
-
     }
 
     @GetMapping("/{id}")
@@ -30,7 +25,7 @@ public class PecaRecurso {
         try{
             return ResponseEntity.ok().body(pecaServico.buscarPeca(id));
         }catch (EntidadeNaoEncontradaException e){
-            return ResponseEntity.notFound().build();
+            throw new EntidadeNaoEncontradaException(e.getMessage());
         }
     }
 
