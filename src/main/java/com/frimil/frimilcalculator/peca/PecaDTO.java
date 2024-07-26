@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -14,11 +16,15 @@ import java.util.List;
 public class PecaDTO {
 
     private Long id;
+    @NotNull(message = "ID da peça não pode ser nulo.")
     private Long idPeca;
+    @NotNull(message = "O peso da peça não pode ser nulo.")
     private BigDecimal peso;
+    @NotNull(message = "O valor da compra não pode ser nulo.")
     private BigDecimal valorDeCompra;
-    private List<Produto> listaDeProdutos;
 
+    @Size(min = 1, message = "A lista de produtos não pode estar vazia.")
+    private List<Produto> listaDeProdutos;
 
 
     public PecaDTO(Peca peca) {

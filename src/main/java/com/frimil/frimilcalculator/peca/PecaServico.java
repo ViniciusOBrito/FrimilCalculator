@@ -6,14 +6,15 @@ import com.frimil.frimilcalculator.produto.Produto;
 import com.frimil.frimilcalculator.venda.VendaServico;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
@@ -28,6 +29,9 @@ public class PecaServico {
     @Transactional
     public PecaDTO cadastrarPecaEProdutos(PecaDTO pecaDTO){
         try{
+
+            PecaDTOValidator.validate(pecaDTO);
+
             Peca peca = new Peca();
             BeanUtils.copyProperties(pecaDTO, peca);
 
@@ -38,13 +42,15 @@ public class PecaServico {
                         calcularValoresDoProduto(produto, pecaDTO);
 
                         return produto;
-                    }).collect(Collectors.toList());
+                    }).toList();
 
             produtos.forEach(peca::addProduto);
 
             return salvarPeca(peca);
 
-        }catch (Exception e){
+        }catch (ConstraintViolationException e){
+            throw e;
+        }catch (Exception e) {
             throw new RuntimeException();
         }
     }
@@ -59,7 +65,7 @@ public class PecaServico {
         return pecaRepositorio.findAllByIdPeca(idPeca)
                 .stream()
                 .map(PecaDTO::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void calcularValoresDoProduto(Produto produto, PecaDTO pecaDTO){
@@ -80,4 +86,5 @@ public class PecaServico {
 
         return pecaDTO;
     }
+
 }

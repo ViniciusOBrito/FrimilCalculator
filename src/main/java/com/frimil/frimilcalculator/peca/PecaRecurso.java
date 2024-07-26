@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,7 +17,12 @@ public class PecaRecurso {
 
     @PostMapping()
     public ResponseEntity<PecaDTO> calcularLucroDianteiro(@RequestBody PecaDTO pecaDTO){
-        return ResponseEntity.ok().body(pecaServico.cadastrarPecaEProdutos(pecaDTO));
+        try{
+            return ResponseEntity.ok().body(pecaServico.cadastrarPecaEProdutos(pecaDTO));
+        }catch (ConstraintViolationException e){
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
     @GetMapping("/{id}")
