@@ -1,6 +1,7 @@
 package com.frimil.frimilcalculator.venda;
 
 
+import com.frimil.frimilcalculator.peca.DTOValidator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ public class VendaServico {
     }
 
     public VendaDTO salvarVenda(VendaDTO vendaDTO){
+
+        DTOValidator.validate(vendaDTO);
+
         Venda venda = new Venda();
         BeanUtils.copyProperties(vendaDTO, venda);
         venda.setDataAtualizacao(new Date());

@@ -30,7 +30,7 @@ public class PecaServico {
     public PecaDTO cadastrarPecaEProdutos(PecaDTO pecaDTO){
         try{
 
-            PecaDTOValidator.validate(pecaDTO);
+            DTOValidator.validate(pecaDTO);
 
             Peca peca = new Peca();
             BeanUtils.copyProperties(pecaDTO, peca);

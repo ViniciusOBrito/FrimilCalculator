@@ -5,6 +5,7 @@ import com.frimil.frimilcalculator.produto.Produto;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -13,8 +14,11 @@ import java.util.Date;
 public class VendaDTO {
 
     private Long id;
+    @NotNull(message = "Id do produto não pode ser nulo.")
     private Long idProduto;
+    @NotNull(message = "Id da peça não pode ser nulo.")
     private Long idPeca;
+    @NotNull(message = "Valor de venda não pode ser nulo.")
     private BigDecimal valorDeVenda;
     private Date dataAtualizacao;
 
