@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/venda")
-public class VendaRecurso {
+public class VendaRecurso implements VendaOperations {
 
     private final VendaServico vendaServico;
 

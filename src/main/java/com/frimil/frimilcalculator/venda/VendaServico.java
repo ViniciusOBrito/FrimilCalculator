@@ -1,7 +1,7 @@
 package com.frimil.frimilcalculator.venda;
 
 
-import com.frimil.frimilcalculator.peca.DTOValidator;
+import com.frimil.frimilcalculator.util.DTOValidator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

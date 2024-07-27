@@ -1,4 +1,4 @@
-package com.frimil.frimilcalculator.peca;
+package com.frimil.frimilcalculator.util;
 
 import com.frimil.frimilcalculator.venda.VendaDTO;
 
