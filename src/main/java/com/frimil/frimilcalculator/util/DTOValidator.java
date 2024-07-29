@@ -1,6 +1,5 @@
 package com.frimil.frimilcalculator.util;
 
-import com.frimil.frimilcalculator.venda.VendaDTO;
 
 import javax.validation.*;
 import java.util.Set;
